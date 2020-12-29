@@ -1,0 +1,25 @@
+
+logging:
+  level:
+    root: INFO
+    '[org.springframework.jdbc.core]': TRACE
+    '[org.springframework.transaction]': TRACE
+    '[org.springframework.data.r2dbc]': TRACE
+    
+spring:
+
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/suppliersdb
+    username: michael
+    password: jordan
+
+  liquibase:
+    change-log: classpath:liquibase/create-tables.xml
+    enabled: true
+    default-schema: suppliersdb
+    url: jdbc:mysql://localhost:3306/suppliersdb
+    user: michael
+    password: jordan
+
+server:
+  port: 7000

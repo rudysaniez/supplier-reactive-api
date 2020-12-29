@@ -1,0 +1,75 @@
+
+logging:
+  level:
+    root: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,env,metrics
+      base-path: /management
+  endpoint:
+    health:
+      show-details: always
+    
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+      connection-timeout: 20000
+
+  data:
+    jdbc:
+      repositories:
+        enabled: false
+        
+  jackson:
+    deserialization:
+      accept-single-value-as-array: true
+    serialization:
+      write-dates-as-timestamps: false
+    generator:
+      write-numbers-as-strings: false
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd'T'HH:mm:ssZ
+    
+  webflux:
+    base-path: /api/v1
+
+pagination:
+  default-page: 0
+  default-size: 20
+
+---  
+spring.profiles: docker
+
+logging:
+  level:
+    root: INFO
+    '[org.springframework.jdbc.core]': TRACE
+    '[org.springframework.transaction]': TRACE
+    '[org.springframework.data.r2dbc]': TRACE
+    
+spring:
+
+  r2dbc:
+    url: r2dbc:mysql://mysql-suppliers:3306/suppliersdb
+    username: michael
+    password: jordan
+
+  datasource:
+    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb?createDatabaseIfNotExist=true
+    username: michael
+    password: jordan
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+  liquibase:
+    change-log: classpath:liquibase/create-tables.xml
+    enabled: true
+    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb?createDatabaseIfNotExist=true
+    user: michael
+    password: jordan
+
+server:
+  port: 7000

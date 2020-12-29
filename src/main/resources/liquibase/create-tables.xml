@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+     
+	<changeSet id="tables_creation" author="michaelJordan">
+		
+		<!-- 
+			REVIEW TABLE.
+		 -->
+		<createTable tableName="supplier">
+			<column name="id" type="INTEGER" autoIncrement="true">
+				<constraints primaryKey="true" primaryKeyName="pk_supplier" nullable="false"/>
+			</column>
+			
+			<column name="supplierId" type="VARCHAR(30)">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="name" type="VARCHAR(50)">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="shortName" type="VARCHAR(50)">
+				<constraints nullable="true"/>
+			</column>
+			
+			<column name="otherName" type="VARCHAR(50)">
+				<constraints nullable="true"/>
+			</column>
+			
+			<column name="secondSupplierOtherName" type="VARCHAR(50)">
+				<constraints nullable="true"/>
+			</column>
+			
+			<column name="fiscalCountryCode" type="VARCHAR(10)">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="fiscalId" type="VARCHAR(30)">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="legalId" type="VARCHAR(30)">
+				<constraints nullable="true"/>
+			</column>
+			
+			<column name="amountOfCapital" type="BIGINT">
+				<constraints nullable="true"/>
+			</column>
+			
+			<column name="supplierType" type="VARCHAR(30)">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="creationDate" type="DATETIME">
+				<constraints nullable="false"/>
+			</column>
+			
+			<column name="updateDate" type="DATETIME">
+				<constraints nullable="true"/>
+			</column>
+		</createTable>
+		
+	</changeSet>
+	
+	<changeSet id="index_creation" author="michaelJordan">
+	
+		<createIndex tableName="supplier" indexName="idx_supplier_id" unique="true">
+			<column name="supplierId"/>
+		</createIndex>
+		
+		<createIndex tableName="supplier" indexName="idx_supplier_name" unique="false">
+			<column name="name"/>
+		</createIndex>
+		
+		<createIndex tableName="supplier" indexName="idx_supplier_fiscalId" unique="true">
+			<column name="fiscalId"/>
+		</createIndex>
+		
+	</changeSet>
+         
+</databaseChangeLog>
