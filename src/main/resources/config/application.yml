@@ -40,6 +40,16 @@ spring:
 pagination:
   default-page: 0
   default-size: 20
+  
+strategy:
+  id:
+    bu: FR
+    storeIdFormat: "000"
+    storeIdMax: 100
+    supplierIdFormat: "00000000"
+    supplierIdMax: 99999999
+    fiscalIdFormat: "00000000"
+    fiscalIdMax: 999999
 
 ---  
 spring.profiles: docker
@@ -58,16 +68,11 @@ spring:
     username: michael
     password: jordan
 
-  datasource:
-    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb?createDatabaseIfNotExist=true
-    username: michael
-    password: jordan
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    
   liquibase:
     change-log: classpath:liquibase/create-tables.xml
     enabled: true
-    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb?createDatabaseIfNotExist=true
+    default-schema: suppliersdb
+    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb
     user: michael
     password: jordan
 

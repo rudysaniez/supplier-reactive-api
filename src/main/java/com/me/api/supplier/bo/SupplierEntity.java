@@ -73,6 +73,8 @@ public class SupplierEntity implements Serializable {
 	@Nullable @Exclude
 	private LocalDateTime updateDate;
 	
+	public static final String SUPPLIER_ID = "SUP_%s_%s_%s";
+	
 	private static final long serialVersionUID = 1L;
 	
 	@PersistenceConstructor
@@ -93,5 +95,12 @@ public class SupplierEntity implements Serializable {
 	 */
 	public SupplierEntity withId(Integer id) {
 		return new SupplierEntity(id, supplierId, name, fiscalCountryCode, fiscalId, supplierType);
+	}
+	
+	public static enum Type {
+		
+		SUPPLIER, 
+		SUB_SUPPLIER, 
+		SUPER_SUPPLIER;
 	}
 }

@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.me.api.supplier.bo.SupplierEntity;
 import com.me.api.supplier.repository.SupplierRepository;
 import com.me.api.supplier.service.console.AsciiArtService;
+import com.me.api.supplier.service.service.id.FiscalIdService;
+import com.me.api.supplier.service.service.id.SupplierIdService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +30,6 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootApplication
 public class Application {
 
-	private static final String MASTER = "SUP_FR_001_00000001";
-	
 	public static void main(String[] args) {
 		
 		SpringApplication app = new SpringApplication(Application.class);
@@ -45,22 +45,37 @@ public class Application {
 		private Integer defaultSize;
 	}
 	
+	/**
+	 * @param artService
+	 * @param supplierRepository
+	 * @param supplierIdService
+	 * @return {@link ApplicationRunner}
+	 */
 	@Bean @Autowired
-	public ApplicationRunner run(AsciiArtService artService, SupplierRepository supplierRepository) {
+	public ApplicationRunner run(AsciiArtService artService, SupplierRepository supplierRepository, 
+			SupplierIdService supplierIdService, FiscalIdService fiscalIdService) {
 		
 		return args -> {
 			
 			artService.display("APPLICATION RUNNER");
 			
+			if(args.containsOption("cleaning")) {
+				
+				supplierRepository.deleteAll().block();
+				log.info(" > Cleaning is done.");
+			}
+			
 			log.info(" > Number of suppliers : {}", supplierRepository.count().block());
 			
-			SupplierEntity supplier = supplierRepository.findBySupplierId(MASTER).block();
-			if(supplier == null) {
+			if(args.containsOption("creation-on-startup")) {
 				
-				supplier = supplierRepository.save(new SupplierEntity(null, MASTER, "MASTER", "001", "FID_000001", "SUPPLIER")).block();
-				log.info(" > Supplier has been created : {}", supplier.toString());
+				SupplierEntity supplierCreated = supplierRepository.save(new SupplierEntity(null, supplierIdService.getId(), 
+						"DEXTER", "001", fiscalIdService.getId(), 
+						SupplierEntity.Type.SUPPLIER.name())).block();
+				
+				log.info(" > Supplier has been created : {}", supplierCreated.toString());
 			}
-			else log.info(" > The supplier with id={} already exists.", MASTER);
+			
 		};
 	}
 }
