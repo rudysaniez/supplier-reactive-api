@@ -14,16 +14,7 @@ management:
       show-details: always
     
 spring:
-  datasource:
-    hikari:
-      maximum-pool-size: 4
-      connection-timeout: 20000
 
-  data:
-    jdbc:
-      repositories:
-        enabled: false
-        
   jackson:
     deserialization:
       accept-single-value-as-array: true
