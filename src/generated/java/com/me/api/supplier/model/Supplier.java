@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class Supplier {
 
-	@NotEmpty
-	@JsonProperty(value = "supplierId", required = true)
+	@JsonProperty(value = "supplierId", required = false)
 	private String supplierId;
 	
 	@NotEmpty

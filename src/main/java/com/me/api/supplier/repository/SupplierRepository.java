@@ -40,4 +40,10 @@ public interface SupplierRepository extends ReactiveCrudRepository<SupplierEntit
 	 */
 	@Transactional(readOnly = true)
 	public Flux<SupplierEntity> findBySupplierIdNotNull(Pageable page);
+	
+	/**
+	 * @param supplierId
+	 * @return {@link Void}
+	 */
+	public Mono<Void> deleteBySupplierId(String supplierId);
 }

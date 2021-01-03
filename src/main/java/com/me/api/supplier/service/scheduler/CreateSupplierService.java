@@ -19,7 +19,7 @@ public class CreateSupplierService {
 	@Autowired private FiscalIdService fiscalIdService;
 	@Autowired private SupplierIdService supplierIdService;
 	
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 15000)
 	public void schedule() {
 		
 		String supplierId = supplierIdService.getId();

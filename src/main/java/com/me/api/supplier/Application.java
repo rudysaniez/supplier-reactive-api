@@ -9,7 +9,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -32,6 +36,15 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootApplication
 public class Application {
 
+	@Profile("test")
+	@Bean
+	public EmbeddedDatabase datasource() {
+		
+		return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).
+				setName("suppliersdb").
+				build();
+	}
+	
 	public static void main(String[] args) {
 		
 		SpringApplication app = new SpringApplication(Application.class);
