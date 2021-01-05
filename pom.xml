@@ -135,6 +135,35 @@
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
 		
+		<!-- Openapi-generator-maven-plugin -->
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>2.1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+
+		<!-- Open API and Swagger UI -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-webflux-ui</artifactId>
+			<version>1.4.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>	
+		
 		<!-- Others -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -183,5 +212,67 @@
 		</dependency>
 		
 	</dependencies>
+	
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+    					<artifactId>docker-maven-plugin</artifactId>
+    					<version>0.34.1</version>
+						<executions>
+							<execution>
+								<id>build</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<images>
+								<image>
+									<!-- Artifact Image -->
+									<name>me/supplier-reactive-api:${project.version}</name>
+									<build>
+										<nocache>true</nocache>
+										<dockerFile>Dockerfile</dockerFile>
+										<tags>
+											<tag>latest</tag>
+										</tags>
+										<assembly>
+											<targetDir>/maven/</targetDir>
+											<inline
+												xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+												xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+												<fileSets>
+													<fileSet>
+														<directory>${project.build.directory}</directory>
+														<outputDirectory>/</outputDirectory>
+														<includes>
+															<include>*.jar</include>
+														</includes>
+													</fileSet>
+													<!-- <fileSet> <outputDirectory>.</outputDirectory> <directory>${project.build.directory}/*.jar</directory> 
+														</fileSet> -->
+													<fileSet>
+														<outputDirectory>.</outputDirectory>
+														<directory>${project.basedir}/src/main/docker/</directory>
+														<filtered>true</filtered>
+													</fileSet>
+												</fileSets>
+											</inline>
+										</assembly>
+									</build>
+								</image>
+							</images>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	
 </project>

@@ -1,4 +1,4 @@
-package com.me.api.supplier.service.service.id;
+package com.me.api.supplier.service.id;
 
 import java.util.Random;
 
@@ -24,6 +24,17 @@ public class SupplierIdService {
 	public static final String DEFAULT_SEPARATOR = "_";
 	public static final String FINAL_SEPARATOR = "@";
 	
+	private static final String PREPARE_IDENTIFIER;
+	
+	static {
+		
+		StringBuilder sb = new StringBuilder(DOMAIN);
+		sb.append(DEFAULT_SEPARATOR).append("%s").append(DEFAULT_SEPARATOR).append("%s").
+		append(FINAL_SEPARATOR).append("%s");
+		
+		PREPARE_IDENTIFIER = sb.toString();
+	}
+	
 	@Autowired
 	public SupplierIdService(@Value("${strategy.id.bu}") String bu, @Value("${strategy.id.storeIdFormat}") String storeIdFormat, 
 			@Value("${strategy.id.storeIdMax}") Integer storeIdMax,
@@ -45,13 +56,11 @@ public class SupplierIdService {
 	 */
 	public String getId() {
 		
-		StringBuilder id = new StringBuilder(DOMAIN);
-		id.append(DEFAULT_SEPARATOR).append(getBu()).append(DEFAULT_SEPARATOR).append(getStoreId()).
-		append(FINAL_SEPARATOR).append(getSupplierId());
+		String newId = String.format(PREPARE_IDENTIFIER, getBu(), getStoreId(), getSupplierId());
 		
-		log.info(" > Id generated is : {}", id.toString());
+		log.info(" > Id generated is : {}", newId);
 		
-		return id.toString();
+		return newId;
 	}
 	
 	/**
@@ -62,13 +71,11 @@ public class SupplierIdService {
 		
 		if(StringUtils.isBlank(storeId)) new IllegalArgumentException("The storeId argument must not be empty.");
 		
-		StringBuilder id = new StringBuilder(DOMAIN);
-		id.append(DEFAULT_SEPARATOR).append(getBu()).append(DEFAULT_SEPARATOR).append(storeId).
-		append(FINAL_SEPARATOR).append(getSupplierId());
+		String newId = String.format(PREPARE_IDENTIFIER, getBu(), storeId, getSupplierId());
 		
-		log.info(" > Id generated is : {}", id.toString());
+		log.info(" > Id generated is : {}", newId);
 		
-		return id.toString();
+		return newId;
 	}
 	
 	/**

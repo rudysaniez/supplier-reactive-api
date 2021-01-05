@@ -6,22 +6,21 @@ logging:
     '[org.springframework.transaction]': TRACE
     '[org.springframework.data.r2dbc]': TRACE
     
----
-spring.profiles: dev
-
-server.port: 7000
-    
 spring:
 
   r2dbc:
-    url: r2dbc:mysql://localhost:3306/suppliersdb
-    username: michael
-    password: jordan
-
+    url: r2dbc:h2:mem:///suppliersdb;DB_CLOSE_DELAY=1
+    username: sa
+    password:
+    
   liquibase:
     change-log: classpath:liquibase/create-tables.xml
     enabled: true
-    default-schema: suppliersdb
-    url: jdbc:mysql://localhost:3306/suppliersdb
-    user: michael
-    password: jordan
+    url: jdbc:h2:mem:suppliersdb;DB_CLOSE_DELAY=-1
+    user: sa
+    password:
+    
+  data:
+    jdbc:
+      repositories:
+        enabled: false

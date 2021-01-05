@@ -14,16 +14,7 @@ management:
       show-details: always
     
 spring:
-  datasource:
-    hikari:
-      maximum-pool-size: 4
-      connection-timeout: 20000
 
-  data:
-    jdbc:
-      repositories:
-        enabled: false
-        
   jackson:
     deserialization:
       accept-single-value-as-array: true
@@ -54,6 +45,8 @@ strategy:
 ---  
 spring.profiles: docker
 
+server.port: 7000
+
 logging:
   level:
     root: INFO
@@ -64,7 +57,7 @@ logging:
 spring:
 
   r2dbc:
-    url: r2dbc:mysql://mysql-suppliers:3306/suppliersdb
+    url: r2dbc:mysql://mysql-suppliersdb:3306/suppliersdb
     username: michael
     password: jordan
 
@@ -72,9 +65,6 @@ spring:
     change-log: classpath:liquibase/create-tables.xml
     enabled: true
     default-schema: suppliersdb
-    url: jdbc:mysql://mysql-suppliers:3306/suppliersdb
+    url: jdbc:mysql://mysql-suppliersdb:3306/suppliersdb
     user: michael
     password: jordan
-
-server:
-  port: 7000

@@ -1,4 +1,4 @@
-package com.me.api.supplier.service.service.id;
+package com.me.api.supplier.service.id;
 
 import java.util.Random;
 
@@ -18,6 +18,12 @@ public class FiscalIdService {
 	private static final Random random = new Random();
 	public static final String DOMAIN = "FID";
 	public static final String DEFAULT_SEPARATOR = "_";
+	
+	private static final String PREPARE_IDENTIFIER;
+	
+	static {
+		PREPARE_IDENTIFIER = DOMAIN + DEFAULT_SEPARATOR + "%s";
+	}
 	
 	@Autowired
 	public FiscalIdService(@Value("${strategy.id.fiscalIdFormat}") String fiscalIdFormat, 
@@ -40,11 +46,10 @@ public class FiscalIdService {
 		String fiscalId = baseId.substring(baseId.length() - fiscalIdFormat.length());
 		log.debug(" > FiscalId generated : {}", fiscalId);
 		
-		StringBuilder id = new StringBuilder(DOMAIN);
-		id.append(DEFAULT_SEPARATOR).append(fiscalId);
+		String newId = String.format(PREPARE_IDENTIFIER, fiscalId);
 		
-		log.info(" > Id generated is : {}", id.toString());
+		log.info(" > Id generated is : {}", newId);
 		
-		return id.toString();
+		return newId;
 	}
 }

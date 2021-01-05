@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.me.api.supplier.service.service.id.FiscalIdService;
+import com.me.api.supplier.service.id.FiscalIdService;
 
 public class FiscalIdTest {
 

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.me.api.supplier.service.service.id.SupplierIdService;
+import com.me.api.supplier.service.id.SupplierIdService;
 
 public class SupplierIdTest {
 
