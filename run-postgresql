@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e 
+
+docker run -d --name postgresql-suppliers -p 5432:5432 -e POSTGRES_PASSWORD="welcome" -e POSTGRES_USER="michael" -e POSTGRES_DB="suppliersdb" postgres:latest

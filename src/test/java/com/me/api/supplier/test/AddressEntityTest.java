@@ -12,31 +12,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.me.api.supplier.domain.SupplierEntity;
-import com.me.api.supplier.repository.SupplierRepository;
+import com.me.api.supplier.domain.AddressEntity;
+import com.me.api.supplier.repository.AddressRepository;
 import com.me.api.supplier.service.console.AsciiArtService;
-import com.me.api.supplier.service.id.FiscalIdService;
 import com.me.api.supplier.service.id.SupplierIdService;
 
 @ExtendWith(SpringExtension.class)
 @DataR2dbcTest
-public class SupplierEntityTest {
+public class AddressEntityTest {
 
-	@Autowired private SupplierRepository supplierRepository;
-	@Autowired private AsciiArtService asciiArtService;
-	@Autowired private SupplierIdService supplierIdService;
-	@Autowired private FiscalIdService fiscalIdService;
+	@Autowired AddressRepository addressRepository;
+	@Autowired SupplierIdService supplierIdService;
+	@Autowired AsciiArtService asciiArtService;
 	
 	@BeforeEach
 	public void setup() {
 		
 		asciiArtService.display("SETUP");
 		
-		supplierRepository.deleteAll().block();
+		addressRepository.deleteAll().block();
 		
-		supplierRepository.save(new SupplierEntity(null, supplierIdService.getId(), 
-				"DEXTER", "001", fiscalIdService.getId(), 
-				LocalDateTime.now())).
+		addressRepository.save(new AddressEntity(null, "222 rue du bois", "La Madeleine", "France", "59110", 
+				supplierIdService.getId(), LocalDateTime.now(), LocalDateTime.now())).
 				log().
 				block();
 	}
@@ -44,9 +41,11 @@ public class SupplierEntityTest {
 	@Test
 	public void findAll() {
 		
-		asciiArtService.display("FIND ALL");
+		List<AddressEntity> address = addressRepository.
+				findAll().
+				collectList().
+				block();
 		
-		List<SupplierEntity> suppliers = supplierRepository.findAll().collectList().log().block();
-		assertThat(suppliers).isNotEmpty();
+		assertThat(address).isNotEmpty();
 	}
 }

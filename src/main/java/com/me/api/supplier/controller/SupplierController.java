@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.me.api.supplier.Application.PaginationInformation;
-import com.me.api.supplier.bo.SupplierEntity;
+import com.me.api.supplier.controller.config.PropertiesConfig.PaginationInformation;
+import com.me.api.supplier.domain.SupplierEntity;
 import com.me.api.supplier.exception.InvalidInputException;
 import com.me.api.supplier.exception.NotFoundException;
 import com.me.api.supplier.mapper.SupplierMapper;
@@ -23,28 +23,25 @@ import com.me.api.supplier.model.PagedSupplier;
 import com.me.api.supplier.model.Supplier;
 import com.me.api.supplier.model.SupplierApi;
 import com.me.api.supplier.repository.SupplierRepository;
-import com.me.api.supplier.service.id.SupplierIdService;
 
-import io.r2dbc.spi.R2dbcDataIntegrityViolationException;
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-@Slf4j
+/**
+ * Using annotated endpoints.
+ * @author rudysaniez
+ */
 @RestController
 public class SupplierController implements SupplierApi {
 
 	private SupplierRepository supplierRepository;
 	private PaginationInformation paginationInformation;
-	private SupplierIdService supplierIdService;
 	private SupplierMapper mapper = Mappers.getMapper(SupplierMapper.class);
 	
 	@Autowired
-	public SupplierController(SupplierRepository supplierRepository, PaginationInformation paginationInformation,
-			SupplierIdService supplierIdService) {
+	public SupplierController(SupplierRepository supplierRepository, PaginationInformation paginationInformation) {
 		
 		this.supplierRepository = supplierRepository;
 		this.paginationInformation = paginationInformation;
-		this.supplierIdService = supplierIdService;
 	}
 	
 	/**
@@ -55,13 +52,13 @@ public class SupplierController implements SupplierApi {
 		
 		if(StringUtils.isEmpty(supplierId)) throw new InvalidInputException("The supplierId must not be empty.");
 		
-		log.info(" > Search a supplier by supplierId={}", supplierId);
-		
+		// @formatter:off
 		return supplierRepository.findBySupplierId(supplierId).
 			switchIfEmpty(Mono.error(new NotFoundException(String.format("The supplier with supplierId=%s doesn't not exists.", supplierId)))).
-			log().
 			map(mapper::toModel).
-			map(s -> ResponseEntity.ok(s));
+			map(s -> ResponseEntity.ok(s)).
+			log();
+		// @formatter:on
 	}
 
 	/**
@@ -76,11 +73,11 @@ public class SupplierController implements SupplierApi {
 		final Integer pageNumber = page;
 		final Integer pageSize = size;
 		
-		if(StringUtils.isNotEmpty(name)) {
+		if(StringUtils.isNotBlank(name)) {
 			
-			return supplierRepository.countByNameStartingWith(name).
-				log().
-				transform(m -> m.flatMap(count -> supplierRepository.findByNameStartingWith(name, PageRequest.of(pageNumber, pageSize, Sort.by(Direction.ASC, "supplierId"))).
+			// @formatter:off
+			return supplierRepository.countByNameContaining(name).
+				transform(m -> m.flatMap(count -> supplierRepository.findByNameContaining(name, PageRequest.of(pageNumber, pageSize, Sort.by(Direction.ASC, "supplierId"))).
 							map(mapper::toModel).collectList().
 							map(list -> PagedSupplier.builder().content(list).
 								page(PageMetadata.builder().
@@ -92,11 +89,12 @@ public class SupplierController implements SupplierApi {
 				).
 				map(pagedSupplier -> ResponseEntity.ok(pagedSupplier)).
 				log();
+			// @formatter:on
 		}
 		else {
 			
+			// @formatter:off
 			return supplierRepository.count().
-				log().
 				transform(m -> m.flatMap(count -> supplierRepository.findBySupplierIdNotNull(PageRequest.of(pageNumber, pageSize, Sort.by(Direction.ASC, "supplierId"))).
 						map(mapper::toModel).collectList().
 						map(list -> PagedSupplier.builder().content(list).
@@ -109,6 +107,7 @@ public class SupplierController implements SupplierApi {
 				).
 				map(pagedSupplier -> ResponseEntity.ok(pagedSupplier)).
 				log();
+			// @formatter:on
 		}
 	}
 
@@ -116,44 +115,25 @@ public class SupplierController implements SupplierApi {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Mono<ResponseEntity<Supplier>> saveOrUpdate(Supplier supplier, ServerWebExchange exchange) {
+	public Mono<ResponseEntity<Supplier>> saveOrUpdate(Mono<Supplier> supplier, ServerWebExchange exchange) {
 		
-		if(StringUtils.isEmpty(supplier.getFiscalId())) throw new InvalidInputException("The fiscalId doesn't not empty.");
-		if(StringUtils.isEmpty(supplier.getName())) throw new InvalidInputException("The name doesn't not empty.");
-		if(StringUtils.isEmpty(supplier.getSupplierType())) throw new InvalidInputException("The supplier type doesn't not empty.");
-		if(StringUtils.isEmpty(supplier.getFiscalCountryCode())) throw new InvalidInputException("The fiscal country code doesn't not empty.");
-		
-		if(StringUtils.isEmpty(supplier.getSupplierId())) {
-			
-			log.info(" > A supplier will be saved : {}", supplier.toString());
-			
-			return save(supplier).
-					map(s -> ResponseEntity.status(HttpStatus.CREATED).body(s)).
-					log();
-		}
-		else {
-			
-			log.info(" > A supplier will be updated : {}", supplier.toString());
-			
-			return supplierRepository.findBySupplierId(supplier.getSupplierId()).
-					switchIfEmpty(Mono.error(new NotFoundException(String.format("The supplier with supplierId=%s doesn't not exists.", supplier.getSupplierId())))).
-					log().
-					flatMap(supplierEntity -> {
+		// @formatter:off
+		return supplier.filter(s -> StringUtils.isNotBlank(s.getSupplierId()) && StringUtils.isNotBlank(s.getName()) && 
+					StringUtils.isNotBlank(s.getFiscalId())).
+				switchIfEmpty(Mono.error(new InvalidInputException(" > The supplier is incorrect."))).
+				map(mapper::toEntity).
+				flatMap(supplierBeforeSearch -> supplierRepository.findBySupplierId(supplierBeforeSearch.getSupplierId()).
+						map(supplierFound -> merge(supplierBeforeSearch, supplierFound)).
+						flatMap(supplierRepository::save).
+							map(mapper::toModel).
+							map(supplierUpdated -> ResponseEntity.ok(supplierUpdated)).
 						
-						SupplierEntity toUpdated = mapper.toEntity(supplier);
-						toUpdated.setId(supplierEntity.getId());
-						toUpdated.setUpdateDate(LocalDateTime.now());
-						toUpdated.setCreationDate(supplierEntity.getCreationDate());
-						
-						return supplierRepository.save(toUpdated).
-								onErrorMap(R2dbcDataIntegrityViolationException.class, e -> new InvalidInputException("The supplier can't be updated.")).
-								log().
-								map(mapper::toModel);
-									
-					}).
-					map(s -> ResponseEntity.ok(s)).
-					log();
-		}
+						switchIfEmpty(supplierRepository.save(supplierBeforeSearch).
+							map(mapper::toModel).
+							map(supplierCreated -> ResponseEntity.status(HttpStatus.CREATED).body(supplierCreated)))
+				).
+				log();
+		// @formatter:on
 	}
 	
 	/**
@@ -164,26 +144,25 @@ public class SupplierController implements SupplierApi {
 		
 		if(StringUtils.isEmpty(supplierId)) throw new InvalidInputException("The supplierId doesn't not empty.");
 		
-		return supplierRepository.deleteBySupplierId(supplierId).
-			map(v -> ResponseEntity.ok(v));
+		// @formatter:off
+		return supplierRepository.
+				deleteBySupplierId(supplierId).
+				map(v -> ResponseEntity.ok(v));
+		// @formatter:on
 	}
-
+	
 	/**
-	 * @param supplier
-	 * @return {@link Supplier}
+	 * @param supplierBeforeSearch
+	 * @param supplierFound
+	 * @return {@link SupplierEntity}
 	 */
-	private Mono<Supplier> save(Supplier supplier) {
+	private SupplierEntity merge(SupplierEntity supplierBeforeSearch, SupplierEntity supplierFound) {
 		
-		String supplierId = supplierIdService.getId();
+		supplierFound.setFiscalCountryCode(supplierBeforeSearch.getFiscalCountryCode());
+		supplierFound.setFiscalId(supplierBeforeSearch.getFiscalId());
+		supplierFound.setName(supplierBeforeSearch.getName());
+		supplierFound.setUpdateDate(LocalDateTime.now());
 		
-		SupplierEntity supplierEntity = mapper.toEntity(supplier);
-		supplierEntity.setId(null);
-		supplierEntity.setSupplierId(supplierId);
-		supplierEntity.setCreationDate(LocalDateTime.now());
-		
-		return supplierRepository.save(supplierEntity).
-			onErrorMap(R2dbcDataIntegrityViolationException.class, e -> new InvalidInputException("The supplier can't be saved.")).
-			log().
-			map(mapper::toModel);
+		return supplierFound;
 	}
 }

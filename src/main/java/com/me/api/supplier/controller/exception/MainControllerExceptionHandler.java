@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.me.api.supplier.exception.InvalidInputException;
 import com.me.api.supplier.exception.NotFoundException;
 import com.me.api.supplier.model.HttpErrorInfo;
 
@@ -21,12 +22,23 @@ public class MainControllerExceptionHandler {
 	/**
 	 * @param request
 	 * @param exception
-	 * @return {@link HttpErrorInfo}
+	 * @return {@link HttpErrorInfo not found exception}
 	 */
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(value = NotFoundException.class)
 	public @ResponseBody HttpErrorInfo notFoundException(ServerHttpRequest request, Exception exception) {
 		return createHttpErrorInfo(HttpStatus.NOT_FOUND, request, exception);
+	}
+	
+	/**
+	 * @param request
+	 * @param exception
+	 * @return {@link HttpErrorInfo unprocessable entity exception}
+	 */
+	@ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+	@ExceptionHandler(value = InvalidInputException.class)
+	public @ResponseBody HttpErrorInfo invalidInputException(ServerHttpRequest request, Exception exception) {
+		return createHttpErrorInfo(HttpStatus.UNPROCESSABLE_ENTITY, request, exception);
 	}
 	
 	/**

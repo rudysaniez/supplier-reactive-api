@@ -1,16 +1,16 @@
 package com.me.api.supplier.repository;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.me.api.supplier.bo.SupplierEntity;
+import com.me.api.supplier.domain.SupplierEntity;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Transactional
-public interface SupplierRepository extends ReactiveCrudRepository<SupplierEntity, Integer> {
+public interface SupplierRepository extends R2dbcRepository<SupplierEntity, Integer> {
 
 	/**
 	 * @param supplierId
@@ -25,14 +25,14 @@ public interface SupplierRepository extends ReactiveCrudRepository<SupplierEntit
 	 * @return {@link SupplierEntity}
 	 */
 	@Transactional(readOnly = true)
-	public Flux<SupplierEntity> findByNameStartingWith(String name, Pageable page);
+	public Flux<SupplierEntity> findByNameContaining(String name, Pageable page);
 	
 	/**
 	 * @param name
 	 * @return {@link Long}
 	 */
 	@Transactional(readOnly = true)
-	public Mono<Long> countByNameStartingWith(String name);
+	public Mono<Long> countByNameContaining(String name);
 	
 	/**
 	 * @param page

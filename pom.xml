@@ -11,14 +11,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.5.RELEASE</version>
+		<version>2.4.5</version>
 		<relativePath />
 	</parent>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>12</java.version>
+		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
@@ -121,18 +121,24 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>dev.miku</groupId>
-    		<artifactId>r2dbc-mysql</artifactId>
-		</dependency>
+    		<groupId>io.r2dbc</groupId>
+    		<artifactId>r2dbc-postgresql</artifactId>
+    	</dependency>
 		
 		<dependency>
-			<groupId>mysql</groupId>
-    		<artifactId>mysql-connector-java</artifactId>
+   			<groupId>org.postgresql</groupId>
+    		<artifactId>postgresql</artifactId>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.okta.spring</groupId>
+			<artifactId>okta-spring-boot-starter</artifactId>
+			<version>2.0.1</version>
 		</dependency>
 		
 		<!-- Openapi-generator-maven-plugin -->
@@ -212,67 +218,5 @@
 		</dependency>
 		
 	</dependencies>
-	
-	<profiles>
-		<profile>
-			<id>docker</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-    					<artifactId>docker-maven-plugin</artifactId>
-    					<version>0.34.1</version>
-						<executions>
-							<execution>
-								<id>build</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<images>
-								<image>
-									<!-- Artifact Image -->
-									<name>me/supplier-reactive-api:${project.version}</name>
-									<build>
-										<nocache>true</nocache>
-										<dockerFile>Dockerfile</dockerFile>
-										<tags>
-											<tag>latest</tag>
-										</tags>
-										<assembly>
-											<targetDir>/maven/</targetDir>
-											<inline
-												xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-												xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-												<fileSets>
-													<fileSet>
-														<directory>${project.build.directory}</directory>
-														<outputDirectory>/</outputDirectory>
-														<includes>
-															<include>*.jar</include>
-														</includes>
-													</fileSet>
-													<!-- <fileSet> <outputDirectory>.</outputDirectory> <directory>${project.build.directory}/*.jar</directory> 
-														</fileSet> -->
-													<fileSet>
-														<outputDirectory>.</outputDirectory>
-														<directory>${project.basedir}/src/main/docker/</directory>
-														<filtered>true</filtered>
-													</fileSet>
-												</fileSets>
-											</inline>
-										</assembly>
-									</build>
-								</image>
-							</images>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	
 </project>
