@@ -7,21 +7,50 @@ logging:
     '[org.springframework.data.r2dbc]': TRACE
     
 ---
-spring.profiles: dev
+spring.config.activate.on-profile: dev-local
 
-server.port: 7000
-    
 spring:
 
   r2dbc:
-    url: r2dbc:mysql://localhost:3306/suppliersdb
-    username: michael
-    password: jordan
+    url: r2dbc:postgresql://localhost:5432/suppliersdb?schema=suppliers
+    username: ${POSTGRES_LOCAL_USERNAME}
+    password: ${POSTGRES_LOCAL_PASSWORD}
 
   liquibase:
     change-log: classpath:liquibase/create-tables.xml
     enabled: true
-    default-schema: suppliersdb
-    url: jdbc:mysql://localhost:3306/suppliersdb
-    user: michael
-    password: jordan
+    default-schema: suppliers
+    url: jdbc:postgresql://localhost:5432/suppliersdb
+    user: ${POSTGRES_LOCAL_USERNAME}
+    password: ${POSTGRES_LOCAL_PASSWORD}
+    
+---
+spring.profiles: cloud
+
+spring:
+
+  r2dbc:
+    url: r2dbc:pool:postgres://${POSTGRES_CLUSTER}/suppliersdb?schema=suppliers
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    properties:
+      sslMode: REQUIRE
+      
+---
+spring.profiles: liquibase-cloud
+
+spring:
+  r2dbc:
+    url: r2dbc:pool:postgres://${POSTGRES_CLUSTER}/suppliersdb?schema=suppliers-liquibase
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    properties:
+      sslMode: REQUIRE
+      
+  liquibase:
+    change-log: classpath:liquibase/create-tables.xml
+    enabled: true
+    default-schema: suppliers-liquibase
+    url: jdbc:postgresql://${POSTGRES_CLUSTER}/suppliersdb?sslmode=require
+    user: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}

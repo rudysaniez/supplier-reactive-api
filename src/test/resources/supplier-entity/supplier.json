@@ -1,0 +1,14 @@
+{
+	"id":1,
+	"supplierId": "SUP_FR_066@66431285",
+	"name": "DEXTER_59202664",
+	"shortName": "DEXTER_POWER",
+	"otherName": "MICHAEL",
+	"secondSupplierOtherName": "BOB",
+	"fiscalCountryCode": "001",
+	"fiscalId": "FID_00778412",
+	"legalId": "XXXXXX",
+	"amountOfCapital": 0,
+	"supplierType": "SUPPLIER",
+	"creationDate": "2021-03-25T08:08:07.981"
+}

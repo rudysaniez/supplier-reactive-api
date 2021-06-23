@@ -3,6 +3,8 @@ logging:
   level:
     root: INFO
 
+server.port: 8080
+
 management:
   endpoints:
     web:
@@ -12,6 +14,11 @@ management:
   endpoint:
     health:
       show-details: always
+      cache:
+        time-to-live: 10000ms
+    info:
+      cache:
+        time-to-live: 30000ms
     
 spring:
 
@@ -28,6 +35,16 @@ spring:
   webflux:
     base-path: /api/v1
 
+okta:
+  oauth2:
+    client-secret: ${OKTA_CLIENT_ID}
+    client-id: ${OKTA_CLIENT_SECRET}
+    issuer: ${OKTA_SERVER_URI}
+    scopes:
+    - demo:register
+    - demo:monitor
+    - openid
+
 pagination:
   default-page: 0
   default-size: 20
@@ -41,30 +58,3 @@ strategy:
     supplierIdMax: 99999999
     fiscalIdFormat: "00000000"
     fiscalIdMax: 999999
-
----  
-spring.profiles: docker
-
-server.port: 7000
-
-logging:
-  level:
-    root: INFO
-    '[org.springframework.jdbc.core]': TRACE
-    '[org.springframework.transaction]': TRACE
-    '[org.springframework.data.r2dbc]': TRACE
-    
-spring:
-
-  r2dbc:
-    url: r2dbc:mysql://mysql-suppliersdb:3306/suppliersdb
-    username: michael
-    password: jordan
-
-  liquibase:
-    change-log: classpath:liquibase/create-tables.xml
-    enabled: true
-    default-schema: suppliersdb
-    url: jdbc:mysql://mysql-suppliersdb:3306/suppliersdb
-    user: michael
-    password: jordan

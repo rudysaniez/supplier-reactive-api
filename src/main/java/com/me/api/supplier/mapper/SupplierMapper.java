@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 
-import com.me.api.supplier.bo.SupplierEntity;
+import com.me.api.supplier.domain.SupplierEntity;
 import com.me.api.supplier.model.Supplier;
 
 @Mapper

@@ -1,7 +1,0 @@
-#!/bin/bash
-
-set -e 
-
-cd $(dirname $0)
-
-curl -X POST -H 'Content-Type: application/json' -d '{"name":"FACOM","fiscalCountryCode":"001","fiscalId":"FID_12356768","supplierType":"SUPPLIER"}' http://localhost:7000/api/v1/suppliers -s | jq

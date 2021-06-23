@@ -23,18 +23,6 @@ public class Supplier {
 	@JsonProperty(value = "name", required = true)
 	private String name;
 	
-	@Exclude
-	@JsonProperty(value = "shortName", required = false)
-	private String shortName;
-	
-	@Exclude
-	@JsonProperty(value = "otherName", required = false)
-	private String otherName;
-	
-	@Exclude
-	@JsonProperty(value = "secondSupplierOtherName", required = false)
-	private String secondSupplierOtherName;
-	
 	@NotEmpty @NotNull
 	@JsonProperty(value = "fiscalCountryCode", required = true)
 	private String fiscalCountryCode;
@@ -42,18 +30,6 @@ public class Supplier {
 	@NotEmpty @NotNull
 	@JsonProperty(value = "fiscalId", required = true)
 	private String fiscalId;
-	
-	@Exclude
-	@JsonProperty(value = "legalId", required = false)
-	private String legalId;
-	
-	@Exclude
-	@JsonProperty(value = "amountOfCapital", required = false)
-	private Long amountOfCapital;
-	
-	@Exclude @NotEmpty
-	@JsonProperty(value = "supplierType", required = true)
-	private String supplierType;
 	
 	@Exclude
 	@JsonProperty(value = "creationDate", required = false)
