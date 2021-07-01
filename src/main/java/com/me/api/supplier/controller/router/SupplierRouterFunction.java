@@ -22,16 +22,16 @@ public class SupplierRouterFunction {
 	@Bean
 	public RouterFunction<ServerResponse> supplierRouter() {
 		
-		return RouterFunctions.route(RequestPredicates.GET("/suppliers-function/{supplierId}").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
+		return RouterFunctions.route(RequestPredicates.GET("/suppliers/{supplierId}").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
 				handler::getBySupplierId).
 				
-				andRoute(RequestPredicates.GET("/suppliers-function").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
+				andRoute(RequestPredicates.GET("/suppliers").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
 						handler::getManySuppliers).
 				
-				andRoute(RequestPredicates.POST("/suppliers-function").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
+				andRoute(RequestPredicates.POST("/suppliers").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
 						handler::saveOfUpdate).
 				
-				andRoute(RequestPredicates.DELETE("/suppliers-function/{supplierId}").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
+				andRoute(RequestPredicates.DELETE("/suppliers/{supplierId}").and(RequestPredicates.accept(MediaType.APPLICATION_JSON)), 
 						handler::delete);
 	}
 }

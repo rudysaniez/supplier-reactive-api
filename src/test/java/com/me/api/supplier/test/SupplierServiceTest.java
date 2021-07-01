@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.data.r2dbc.AutoConfigureDataR2dbc;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
@@ -18,22 +17,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.BodyContentSpec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.me.api.supplier.Api;
-import com.me.api.supplier.controller.SupplierController;
 import com.me.api.supplier.controller.config.PropertiesConfig.PaginationInformation;
+import com.me.api.supplier.controller.router.SupplierRouterFunction;
 import com.me.api.supplier.domain.SupplierEntity;
 import com.me.api.supplier.repository.SupplierRepository;
 import com.me.api.supplier.service.console.AsciiArtService;
 
 import reactor.core.publisher.Mono;
 
-@WebFluxTest(controllers = {SupplierController.class})
-@AutoConfigureDataR2dbc
+@WebFluxTest(controllers = {SupplierRouterFunction.class})
 @ExtendWith(SpringExtension.class)
 public class SupplierServiceTest {
 
@@ -80,6 +79,7 @@ public class SupplierServiceTest {
 		
 		// @formatter:off
 		return client.
+				mutateWith(SecurityMockServerConfigurers.mockJwt()).
 				get().uri(uri -> uri.pathSegment(Api.SUPPLIER_PATH, id).build()).
 				accept(MediaType.APPLICATION_JSON).exchange().
 				expectStatus().isEqualTo(status).

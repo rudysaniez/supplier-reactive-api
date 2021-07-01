@@ -23,7 +23,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/suppliersdb
     user: ${POSTGRES_LOCAL_USERNAME}
     password: ${POSTGRES_LOCAL_PASSWORD}
-    
+
 ---
 spring.profiles: cloud
 

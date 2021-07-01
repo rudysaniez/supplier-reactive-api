@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.me.api.supplier.domain.SupplierEntity;
@@ -26,6 +28,7 @@ public class SupplierEntityTest {
 	@Autowired private AsciiArtService asciiArtService;
 	@Autowired private SupplierIdService supplierIdService;
 	@Autowired private FiscalIdService fiscalIdService;
+	@MockBean ReactiveJwtDecoder darthNimbusReactiveJwtDecoder;
 	
 	@BeforeEach
 	public void setup() {
@@ -36,7 +39,8 @@ public class SupplierEntityTest {
 		
 		supplierRepository.save(new SupplierEntity(null, supplierIdService.getId(), 
 				"DEXTER", "001", fiscalIdService.getId(), 
-				LocalDateTime.now())).
+				LocalDateTime.now(), LocalDateTime.now(),
+				new Integer[] {1, 2, 6, 9})).
 				log().
 				block();
 	}

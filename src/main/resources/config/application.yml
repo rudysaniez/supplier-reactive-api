@@ -21,7 +21,6 @@ management:
         time-to-live: 30000ms
     
 spring:
-
   jackson:
     deserialization:
       accept-single-value-as-array: true
