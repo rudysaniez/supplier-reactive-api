@@ -36,6 +36,9 @@ public class SupplierEntity {
 	@Column("fiscal_id") @NotBlank @Exclude
 	private String fiscalId;
 	
+	@Column("number_values") @Nullable @Exclude
+	private Integer[] numberValues;
+	
 	@Column("creation_date") @NotNull @Exclude
 	private LocalDateTime creationDate;
 	
@@ -44,15 +47,30 @@ public class SupplierEntity {
 	
 	public static final String SUPPLIER_ID = "SUP_%s_%s_%s";
 	
+	/**
+	 * @param id
+	 * @param supplierId
+	 * @param name
+	 * @param fiscalCountryCode
+	 * @param fiscalId
+	 * @param creationDate
+	 * @param updateDate
+	 * @param numberValues
+	 */
 	@PersistenceConstructor
-	public SupplierEntity(Integer id, String supplierId, String name, String fiscalCountryCode, String fiscalId, LocalDateTime creationDate) {
+	public SupplierEntity(Integer id, @NotBlank String supplierId, @NotBlank String name,
+			@NotBlank String fiscalCountryCode, @NotBlank String fiscalId, @NotNull LocalDateTime creationDate,
+			LocalDateTime updateDate, Integer[] numberValues) {
 		
+		super();
 		this.id = id;
 		this.supplierId = supplierId;
-		this.name = name.toUpperCase();
+		this.name = name;
 		this.fiscalCountryCode = fiscalCountryCode;
 		this.fiscalId = fiscalId;
 		this.creationDate = creationDate;
+		this.updateDate = updateDate;
+		this.numberValues = numberValues;
 	}
 	
 	/**
@@ -60,6 +78,6 @@ public class SupplierEntity {
 	 * @return {@link SupplierEntity}
 	 */
 	public SupplierEntity withId(Integer id) {
-		return new SupplierEntity(id, supplierId, name, fiscalCountryCode, fiscalId, creationDate);
+		return new SupplierEntity(id, supplierId, name, fiscalCountryCode, fiscalId, creationDate, updateDate, numberValues);
 	}
 }

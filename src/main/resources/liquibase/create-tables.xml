@@ -5,7 +5,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
      
-	<changeSet id="tables_creation" author="michaelJordan">
+	<changeSet id="tables_creation" author="rsaniez">
 		
 		<!-- 
 			SUPPLIER TABLE.
@@ -42,7 +42,7 @@
 		
 	</changeSet>
 	
-	<changeSet id="index_creation" author="michaelJordan">
+	<changeSet id="index_creation" author="rsaniez">
 	
 		<createIndex tableName="supplier" indexName="idx_supplier_id" unique="true">
 			<column name="supplier_id"/>
@@ -61,7 +61,7 @@
 	<!-- 
 		ADDRESS TABLE.
 	 -->
-	<changeSet id="address_creation" author="michaelJordan">
+	<changeSet id="address_creation" author="rsaniez">
 	
 		<createTable tableName="address">
 			<column name="id" type="INTEGER" autoIncrement="true">
@@ -97,6 +97,17 @@
 			</column>
 		</createTable>
 		
+	</changeSet>
+	
+	<!-- 
+		ADD ARRAY COLUMN NAMED 'number_values'
+	 -->
+	<changeSet id="add_array_column" author="rsaniez">
+		<addColumn tableName="supplier">
+			 <column name="number_values" type="INTEGER[]">
+			 <constraints nullable="true"/>
+			 </column>
+		</addColumn>
 	</changeSet>
          
 </databaseChangeLog>

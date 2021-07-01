@@ -79,7 +79,9 @@ public class Application {
 			if(args.containsOption("creation-on-startup")) {
 				
 				SupplierEntity supplierCreated = supplierRepository.save(new SupplierEntity(null, supplierIdService.getId(), 
-						"DEXTER", "001", fiscalIdService.getId(), LocalDateTime.now())).block();
+						"DEXTER", "001", fiscalIdService.getId(), LocalDateTime.now(), LocalDateTime.now(), 
+						new Integer[] {1, 2, 3, 4, 5})).
+						block();
 				
 				log.info(" > Supplier has been created : {}", supplierCreated.toString());
 			}

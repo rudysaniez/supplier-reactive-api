@@ -1,10 +1,9 @@
 package com.me.api.supplier.model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotEmpty;
-
-import org.springframework.http.HttpStatus;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -16,17 +15,15 @@ import lombok.NoArgsConstructor;
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class HttpErrorInfo {
 
-	@JsonProperty(value = "timestamp", required = true)
-	private ZonedDateTime timestamp;
+	@JsonProperty(value = "timestamp", required = true) @NotNull
+	private LocalDateTime timestamp;
 	
-	@NotEmpty
-	@JsonProperty(value = "path", required = true)
+	@JsonProperty(value = "path", required = true) @NotBlank
     private String path;
 	
-	@JsonProperty(value = "httpStatus", required = true)
-    private HttpStatus httpStatus;
+	@JsonProperty(value = "httpStatus", required = true) @NotNull
+    private Integer httpStatus;
 	
-	@NotEmpty
-	@JsonProperty(value = "message", required = true)
+	@JsonProperty(value = "message", required = true) @NotBlank
     private String message;
 }

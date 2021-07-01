@@ -51,7 +51,7 @@ while getopts ":e:i:o:t:p:m:f:s:q:P:h" arg; do
 done
 
 if [ -z $ENDPOINT ]
-then ENDPOINT="suppliers-function"
+then ENDPOINT="suppliers"
 fi
 
 if [ -z $PAGE ]

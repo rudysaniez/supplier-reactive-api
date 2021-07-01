@@ -32,6 +32,10 @@ public class Supplier {
 	private String fiscalId;
 	
 	@Exclude
+	@JsonProperty(value = "numberValues", required = false)
+	private Integer[] numberValues;
+	
+	@Exclude
 	@JsonProperty(value = "creationDate", required = false)
 	private LocalDateTime creationDate;
 	

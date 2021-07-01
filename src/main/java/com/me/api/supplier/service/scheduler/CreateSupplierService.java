@@ -30,7 +30,7 @@ public class CreateSupplierService {
 		
 		SupplierEntity supplierCreated = supplierRepository.save(new SupplierEntity(null, supplierId, 
 					"DEXTER_" + supplierIdService.getSupplierId(), "001", fiscalIdService.getId(), 
-					LocalDateTime.now())).
+					LocalDateTime.now(), LocalDateTime.now(), new Integer[] {1, 2, 3, 4, 5, 6})).
 				block();
 		
 		log.info(" > Supplier has been created : {}", supplierCreated.toString());

@@ -5,9 +5,18 @@ logging:
     '[org.springframework.jdbc.core]': TRACE
     '[org.springframework.transaction]': TRACE
     '[org.springframework.data.r2dbc]': TRACE
-    
-spring:
 
+okta:
+  oauth2:
+    client-secret: power-secret
+    client-id: power-user
+    issuer: https://dev-4118925.okta.com/oauth2/default
+    scopes:
+    - demo:register
+    - demo:monitor
+    - openid
+
+spring:
   r2dbc:
     url: r2dbc:h2:mem:///suppliersdb;DB_CLOSE_DELAY=1
     username: sa
